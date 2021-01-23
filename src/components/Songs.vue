@@ -1,14 +1,56 @@
 <template>
   <v-container>
-    <h1>Canciones Itunes</h1>
-    <br />
-    <v-text-field
-      placeholder="Busca tu canción favorita en Itunes"
-      v-model="selectedSong"
-      filled
-      rounded
-      dense
-    ></v-text-field>
+    <v-row dense>
+      <h1>Canciones Itunes</h1>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <v-text-field
+        placeholder="Busca tu canción favorita en Itunes"
+        v-model="selectedSong"
+        filled
+        rounded
+        dense
+      ></v-text-field>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+
+      <v-col
+        v-for="(item, i) in listOfAlbums"
+        :key="i"
+        cols="4"
+        class="pa-3 d-flex flex-column"
+      >
+        <v-card>
+          <v-img
+            :src="item.artworkUrl100"
+            class="white--text align-end"
+            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+            height="200px"
+          >
+            <v-card-title v-text="item.collectionName"></v-card-title>
+          </v-img>
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <div>
+              <v-card-title
+                class="headline"
+                v-text="item.collectionName"
+              ></v-card-title>
+
+              <v-card-subtitle v-text="item.artistName"></v-card-subtitle>
+
+              <v-card-actions> </v-card-actions>
+            </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -33,36 +75,62 @@ export default {
         artist: "Ellie Goulding",
       },
     ],
-    listOfSongs: [],
+    listOfAlbums: [],
+    artistId: 0,
     selectedSong: "",
   }),
 
-  async mounted() {
-    var config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true",
-      },
-    };
+  mounted() {
+    this.getArtistId();
+    //  this.getAlbumsByArtist();
+  },
+  methods: {
+    async getArtistId() {
+      var config = {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Credentials": "true",
+        },
+      };
 
-    await axios
-      .get(
-        "https://itunes.apple.com/search?term=jack+johnson&limit=25/",
-        config,
-        {
-          proxy: "http://localhost:8080",
-        }
-      )
-      .then((response) => {
-        this.listOfSongs = response.data;
-        console.log("caca" + response.data.results[0].kind);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      await axios
+        .get(
+          "https://itunes.apple.com/search?term=jack+johnson&limit=10/",
+          config
+        )
+        .then((response) => {
+          this.listOfAlbums = response.data.results;
+
+          console.log(this.listOfAlbums);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    async getAlbumsByArtist() {
+      var config = {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Credentials": "true",
+        },
+      };
+
+      await axios
+        .get("https://itunes.apple.com/lookup?id=909253&entity=album ", config)
+        .then((response) => {
+          this.listOfAlbums = response.data;
+          console.log(this.listOfAlbums);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>

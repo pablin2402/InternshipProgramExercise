@@ -17,18 +17,33 @@
           </v-flex>
         </v-layout>
       </v-form>
+      <v-layout row>
+        <v-flex xs12 class="text-xs-center">
+          <v-btn fab outline color="white" small @click="getByName()">
+            <v-icon> mdi-arrow-left </v-icon>
+          </v-btn>
+          <span class="title white--text mx-4">{{ page }}</span>
+          <v-btn fab outline color="white" small @click="getByName(true)">
+            <v-icon> mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+
       <v-row dense>
         <v-col
           v-for="(item, i) in listOfAlbums"
           :key="i"
-          cols="4"
+          cols="12"
+          sm="3"
+          ls="12"
           class="pa-3 d-flex flex-column"
         >
-          <v-card>
+          <v-card height="100%">
             <v-avatar
               :tile="true"
-              size="160"
-              class="elevation-4 album-box mt-3"
+              size="250"
+              class="ma-3 center elevation-4 album-box mt-3"
+              round
             >
               <img
                 :src="resizeImageUrl(item)"
@@ -41,7 +56,7 @@
               <div>
                 <v-card-title
                   v-text="item.collectionName"
-                  class="font-weight-light"
+                  class="textadapt font-weight-light"
                 ></v-card-title>
 
                 <v-card-subtitle v-text="item.artistName"></v-card-subtitle>
@@ -69,19 +84,30 @@ export default {
   data: () => ({
     listOfAlbums: [],
     selectedSong: "",
+    entity: "album",
+    page: 0,
   }),
 
-  mounted() {
-    this.getByName();
-  },
   methods: {
-    async getByName(increase) {
+    async getByName(numberOfPage) {
       var self = this;
       axios
-        .get(API_HOST + "term=" + self.selectedSong + "&limit=1/", config)
+        .get(
+          API_HOST +
+            `term=${self.selectedSong}&entity=${self.entity}&limit=100&offset=${
+              self.page * 100
+            }`,
+          config
+        )
         .then((response) => {
+          if (numberOfPage) {
+            self.page++;
+          } else {
+            self.page--;
+          }
+
           this.listOfAlbums = response.data.results;
-          console.log(increase);
+          console.log(numberOfPage);
         })
         .catch((error) => {
           console.log(error);
@@ -91,14 +117,24 @@ export default {
       return size.artworkUrl100.replace("100x100", "300x300");
     },
   },
-  computed() {
-    this.getByName();
-  },
 };
 </script>
 <style scoped>
+.album-box {
+  position: relative;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
 .album-box:hover {
   -webkit-transform: scale(1.12, 1.12);
   transform: scale(1.12, 1.12);
+}
+.textadapt {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

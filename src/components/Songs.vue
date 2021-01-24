@@ -1,10 +1,14 @@
 <template>
   <v-container>
     <v-flex>
-      <h3 class="headline text-xs-center">Canciones Itunes</h3>
+      <v-layout justify-center>
+        <h3 id="textfield1" class="title is-4 has-text-centered">
+          Itunes Songs.
+        </h3>
+      </v-layout>
       <br />
       <v-form @submit.prevent="getByName(true)">
-        <v-layout row>
+        <v-layout justify-center>
           <v-flex xs11>
             <v-text-field
               placeholder="Busca tu canción favorita en Itunes"
@@ -17,7 +21,7 @@
           </v-flex>
         </v-layout>
       </v-form>
-      <v-layout row>
+      <v-layout justify-center v-if="!searching && listOfAlbums.length > 0">
         <v-flex xs12 class="text-xs-center">
           <v-btn fab outline color="white" small @click="getByName()">
             <v-icon> mdi-arrow-left </v-icon>
@@ -28,8 +32,23 @@
           </v-btn>
         </v-flex>
       </v-layout>
-
-      <v-row dense>
+      <br />
+      <v-layout justify-center>
+        <div v-if="searching">
+          <v-progress-circular
+            :size="70"
+            :width="7"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+        </div>
+      </v-layout>
+      <v-layout justify-center>
+        <div v-if="noResults && !searching">
+          <h3 class="title is-4 has-text-centered">No results found.</h3>
+        </div>
+      </v-layout>
+      <v-row dense v-if="!searching && listOfAlbums.length > 0">
         <v-col
           v-for="(item, i) in listOfAlbums"
           :key="i"
@@ -86,11 +105,15 @@ export default {
     selectedSong: "",
     entity: "album",
     page: 0,
+    searching: false,
+    noResults: false,
   }),
 
   methods: {
     async getByName(numberOfPage) {
       var self = this;
+      self.searching = true;
+
       axios
         .get(
           API_HOST +
@@ -100,14 +123,14 @@ export default {
           config
         )
         .then((response) => {
+          self.searching = false;
           if (numberOfPage) {
             self.page++;
           } else {
             self.page--;
           }
-
           this.listOfAlbums = response.data.results;
-          console.log(numberOfPage);
+          this.noResults = this.listOfAlbums.length === 0;
         })
         .catch((error) => {
           console.log(error);
@@ -136,5 +159,8 @@ export default {
 .textadapt {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.centrado {
+  display: inline-block;
 }
 </style>

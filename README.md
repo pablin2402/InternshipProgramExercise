@@ -16,10 +16,10 @@ Vuejs, Javascript, Vuetify, Axios, SCSS and HTML 5
 # Some Screens of the final Solutions
  The following screenshots show the final result meeting the objective and some optional points:
 
- ![Image of Example 2](https://github.com/pablin2402/InternshipProgramExercise/tree/master/src/1.png))
+ ![Image of Example 1](https://github.com/pablin2402/InternshipProgramExercise/blob/master/src/images/1.png)
 
  Exceptions
- ![Image of Example 3](https://github.com/pablin2402/InternshipProgramExercise/tree/master/src/exceptions1.png))
+ ![Image of Example 2](https://github.com/pablin2402/InternshipProgramExercise/blob/master/src/images/exceptions1.png)
 
  The nexts steps are neeeded to run the proyect
 ## Project setup

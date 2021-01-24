@@ -21,12 +21,17 @@
           </v-flex>
         </v-layout>
       </v-form>
+      <v-layout justify-end v-if="!searching && listOfAlbums.length > 0">
+        <v-btn class="ma-2" outlined color="black" v-on:click="sortbyName">
+          <v-icon>mdi-format-list-bulleted-square</v-icon> Sort A-Z
+        </v-btn>
+      </v-layout>
       <v-layout justify-center v-if="!searching && listOfAlbums.length > 0">
         <v-flex xs12 class="text-xs-center">
           <v-btn fab outline color="white" small @click="getByName()">
             <v-icon> mdi-arrow-left </v-icon>
           </v-btn>
-          <span class="title white--text mx-4">{{ page }}</span>
+          <span class="title black--text mx-4">{{ page }}</span>
           <v-btn fab outline color="white" small @click="getByName(true)">
             <v-icon> mdi-arrow-right</v-icon>
           </v-btn>
@@ -110,10 +115,21 @@ export default {
   }),
 
   methods: {
+    sortbyName: function () {
+      var self = this;
+      self.listOfAlbums.sort(function (a, b) {
+        if (a.collectionName > b.collectionName) {
+          return 1;
+        }
+        if (a.collectionName < b.collectionName) {
+          return -1;
+        }
+        return 0;
+      });
+    },
     async getByName(numberOfPage) {
       var self = this;
       self.searching = true;
-
       axios
         .get(
           API_HOST +
@@ -136,7 +152,7 @@ export default {
           console.log(error);
         });
     },
-    resizeImageUrl(size) {
+    resizeImageUrl: function (size) {
       return size.artworkUrl100.replace("100x100", "300x300");
     },
   },

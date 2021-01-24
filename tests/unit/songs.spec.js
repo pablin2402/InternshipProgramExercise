@@ -32,4 +32,23 @@ describe("Songs.vue", () => {
     const textfield = wrapper.find("#textfield1");
     assert.exists(textfield);
   });
+   it.only("No results has to be false", () => {
+    const wrapper = mount(Songs, {
+      vuetify,
+      localVue,
+      stubs: ["VTextField", "VSnackbar"]
+    });
+    const noresult = wrapper.vm.noResults;
+    assert.equal(noresult, false);
+  });
+  it.only("Entity has to be album", () => {
+    const wrapper = mount(Songs, {
+      vuetify,
+      localVue,
+      stubs: ["VTextField", "VSnackbar"]
+    });
+    const entity = wrapper.vm.entity;
+    assert.equal(entity,"album");
+    
+  });
 });

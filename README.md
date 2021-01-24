@@ -5,7 +5,7 @@ Create a seach field that passes a text string to search content, the result sho
 
 The first step is to interact with the API REST, I used **AXIOS** for send a _GET_ request.Then I had a problem with CORS, so I had to read some StackOverflow forums for that.
 
-As a second step I dedicated my time to make a good UI using **VUETIFY** and make some optional points that were given. 
+As a second step I dedicated my time to make a good UI using **VUETIFY**, i found a problem with the resolution of the image, since by default it is 100x100, so to solve this problem create a method that changes the resolution to 300x300 for a better user experience and make some optional points that were given. 
 
 Then I found that I had a mistake with my http request, because it was searching all the songs from an artist and not their albums, so i started to play with the itunes api for fix this.
 

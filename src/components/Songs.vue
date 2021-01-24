@@ -1,46 +1,60 @@
 <template>
   <v-container>
-    <h1>Canciones Itunes</h1>
-    <v-text-field
-      placeholder="Busca tu canción favorita en Itunes"
-      v-model="selectedSong"
-      append-icon="mdi-magnify"
-      outlined
-      rounded
-    ></v-text-field>
-    <v-btn color="primary" v-on:click="getByName"> Primary </v-btn>
-    <v-row dense>
-      <v-col
-        v-for="(item, i) in listOfAlbums"
-        :key="i"
-        cols="4"
-        class="pa-3 d-flex flex-column"
-      >
-        <v-card>
-          <v-img
-            :src="item.artworkUrl100"
-            class="white--text align-end"
-            gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            height="300px"
-          >
-          </v-img>
-          <div class="d-flex flex-no-wrap justify-space-between">
-            <div>
-              <v-card-title
-                v-text="item.collectionName"
-                class="font-weight-light"
-              ></v-card-title>
+    <v-flex>
+      <h3 class="headline text-xs-center">Canciones Itunes</h3>
+      <br />
+      <v-form @submit.prevent="getByName(true)">
+        <v-layout row>
+          <v-flex xs11>
+            <v-text-field
+              placeholder="Busca tu canción favorita en Itunes"
+              v-model="selectedSong"
+              append-icon="mdi-magnify"
+              outlined
+              rounded
+              clearable
+            ></v-text-field>
+          </v-flex>
+        </v-layout>
+      </v-form>
+      <v-row dense>
+        <v-col
+          v-for="(item, i) in listOfAlbums"
+          :key="i"
+          cols="4"
+          class="pa-3 d-flex flex-column"
+        >
+          <v-card>
+            <v-avatar
+              :tile="true"
+              size="160"
+              class="elevation-4 album-box mt-3"
+            >
+              <img
+                :src="resizeImageUrl(item)"
+                alt="Album Cover"
+                class="album-cover"
+              />
+            </v-avatar>
 
-              <v-card-subtitle v-text="item.artistName"></v-card-subtitle>
+            <div class="d-flex flex-no-wrap justify-space-between">
+              <div>
+                <v-card-title
+                  v-text="item.collectionName"
+                  class="font-weight-light"
+                ></v-card-title>
 
-              <v-card-actions>
-                <v-btn text> Price {{ item.collectionPrice }} $ </v-btn>
-              </v-card-actions>
+                <v-card-subtitle v-text="item.artistName"></v-card-subtitle>
+
+                <v-card-actions>
+                  <v-btn text> Price {{ item.collectionPrice }} $ </v-btn>
+                </v-card-actions>
+              </div>
             </div>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-flex>
   </v-container>
 </template>
 
@@ -53,22 +67,7 @@ export default {
   name: "Songs",
 
   data: () => ({
-    items: [
-      {
-        color: "#1F7087",
-        src: "https://cdn.vuetifyjs.com/images/cards/foster.jpg",
-        title: "Supermodel",
-        artist: "Foster the People",
-      },
-      {
-        color: "#952175",
-        src: "https://cdn.vuetifyjs.com/images/cards/halcyon.png",
-        title: "Halcyon Days",
-        artist: "Ellie Goulding",
-      },
-    ],
     listOfAlbums: [],
-    artistId: 0,
     selectedSong: "",
   }),
 
@@ -76,16 +75,20 @@ export default {
     this.getByName();
   },
   methods: {
-    async getByName() {
+    async getByName(increase) {
       var self = this;
       axios
-        .get(API_HOST + "term=" + self.selectedSong + "&limit=25/", config)
+        .get(API_HOST + "term=" + self.selectedSong + "&limit=1/", config)
         .then((response) => {
           this.listOfAlbums = response.data.results;
+          console.log(increase);
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+    resizeImageUrl(size) {
+      return size.artworkUrl100.replace("100x100", "300x300");
     },
   },
   computed() {
@@ -93,3 +96,9 @@ export default {
   },
 };
 </script>
+<style scoped>
+.album-box:hover {
+  -webkit-transform: scale(1.12, 1.12);
+  transform: scale(1.12, 1.12);
+}
+</style>
